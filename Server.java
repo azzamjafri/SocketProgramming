@@ -1,11 +1,14 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class Server {
 
 	private Socket socket = null;
 	private ServerSocket server = null;
 	private DataInputStream input = null;
+	private DataOutputStream output = null;
+	private DataInputStream input2 = null;
 
 	public Server(int port) {
 
@@ -20,15 +23,26 @@ public class Server {
 			System.out.println("Client Accepted !");
 
 			//Taking input from client socket
-			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			input = new DataInputStream(socket.getInputStream());
+
+			output = new DataOutputStream(socket.getOutputStream());
 
 			String line = "";
 
-			while(!line.equals("Over") || !line.equals("over")) {
+			while(!line.equals("over")) {
 
 				try{
+
 					line = input.readUTF();
 					System.out.println(line);
+
+					// Scanner input2 = new Scanner(System.in);
+					input2 = new DataInputStream(socket.getInputStream());
+
+					line = input2.readLine();
+					output.writeUTF(line);
+
+
 				}catch(IOException i) {
 					System.out.println(i);
 
@@ -38,6 +52,7 @@ public class Server {
 
 			socket.close();
 			input.close();
+			output.close();
 
 
 		}catch(IOException i) {

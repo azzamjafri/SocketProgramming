@@ -6,6 +6,7 @@ public class Client {
 	private Socket socket = null;
 	private DataInputStream input = null;
 	private DataOutputStream output = null;
+	private DataInputStream input2 = null;
 
 	public Client(String address, int port) {
 
@@ -25,16 +26,25 @@ public class Client {
 
 		String line = "";
 
-		while(!line.equals("over") || !line.equals("Over")) {
+		do {
 
 			try{
 				line = input.readLine();
 				output.writeUTF(line);
 
+				
+				input2 = new DataInputStream(socket.getInputStream());
+
+
+				line = input2.readUTF();
+				System.out.println(line);
+
+
+
 			}catch(IOException i ) {
 				System.out.println(i);
 			}
-		}
+		}while(!line.equals("over"));
 
 		try{
 			// Closing the connection.
